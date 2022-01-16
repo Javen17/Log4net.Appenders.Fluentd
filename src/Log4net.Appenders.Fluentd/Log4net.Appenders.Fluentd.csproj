@@ -1,15 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Authors>MCKanpolat</Authors>
-    <Description>Fluentd log4net appender</Description>
-    <PackageProjectUrl>https://github.com/MCKanpolat/Log4net.Appenders.Fluentd</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/MCKanpolat/Log4net.Appenders.Fluentd</RepositoryUrl>
+    <Authors>MCKanpolat. Javen17</Authors>
+    <Description>Fork from MCKanpolat fluentd appender modified so it fires and forgets and doesn't hold the main program execution</Description>
+    <PackageProjectUrl>https://github.com/Javen17/Log4net.Appenders.Fluentd</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Javen17/Log4net.Appenders.Fluentd</RepositoryUrl>
     <PackageTags>log4net fluentd appender</PackageTags>
     <PackageReleaseNotes />
-    <Copyright>MCKanpolat</Copyright>
+    <Copyright>MCKanpolat, Javen17</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' != 'netstandard2.0' ">
