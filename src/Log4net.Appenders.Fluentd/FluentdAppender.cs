@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using log4net.Appender;
 using log4net.Core;
 
@@ -63,21 +65,23 @@ namespace Log4net.Appenders.Fluentd
 
         protected override void Append(LoggingEvent loggingEvent)
         {
-            var renderedMessage = RenderLoggingEvent(loggingEvent);
-
-            var record = new Dictionary<string, object> {
-                { "level", loggingEvent.Level.Name },
-                { "message", renderedMessage },
-                { "logger_name", loggingEvent.LoggerName }
-            };
-
-            if (EmitStackTraceWhenAvailable && !string.IsNullOrWhiteSpace(loggingEvent.ExceptionObject?.StackTrace))
+            Task.Run(() =>
             {
-                var transcodedFrames = new List<Dictionary<string, object>>();
-                var stackTrace = new StackTrace(true);
-                foreach (StackFrame frame in stackTrace.GetFrames())
+                var renderedMessage = RenderLoggingEvent(loggingEvent);
+
+                var record = new Dictionary<string, object> {
+                    { "level", loggingEvent.Level.Name },
+                    { "message", renderedMessage },
+                    { "logger_name", loggingEvent.LoggerName }
+                };
+
+                if (EmitStackTraceWhenAvailable && !string.IsNullOrWhiteSpace(loggingEvent.ExceptionObject?.StackTrace))
                 {
-                    var transcodedFrame = new Dictionary<string, object>
+                    var transcodedFrames = new List<Dictionary<string, object>>();
+                    var stackTrace = new StackTrace(true);
+                    foreach (StackFrame frame in stackTrace.GetFrames())
+                    {
+                        var transcodedFrame = new Dictionary<string, object>
                     {
                         { "filename", frame.GetFileName() },
                         { "line", frame.GetFileLineNumber() },
@@ -86,42 +90,42 @@ namespace Log4net.Appenders.Fluentd
                         { "il_offset", frame.GetILOffset() },
                         { "native_offset", frame.GetNativeOffset() },
                     };
-                    transcodedFrames.Add(transcodedFrame);
+                        transcodedFrames.Add(transcodedFrame);
+                    }
+                    record.Add("stacktrace", transcodedFrames);
                 }
-                record.Add("stacktrace", transcodedFrames);
-            }
 
-            if (IncludeAllProperties && loggingEvent.Properties.Count > 0)
-            {
-                foreach (var key in loggingEvent.Properties.GetKeys())
+                if (IncludeAllProperties && loggingEvent.Properties.Count > 0)
                 {
-                    var val = loggingEvent.Properties[key];
-                    if (val == null)
-                        continue;
+                    foreach (var key in loggingEvent.Properties.GetKeys())
+                    {
+                        var val = loggingEvent.Properties[key];
+                        if (val == null)
+                            continue;
 
-                    record.Add(key, SerializePropertyValue(key, val));
+                        record.Add(key, SerializePropertyValue(key, val));
+                    }
                 }
-            }
 
-            try
-            {
-                EnsureConnected();
-            }
-            catch (Exception ex)
-            {
-                base.ErrorHandler.Error($"{nameof(FluentdAppender)} EnsureConnected - {ex.Message}");
-            }
+                try
+                {
+                    EnsureConnected();
+                }
+                catch (Exception ex)
+                {
+                    base.ErrorHandler.Error($"{nameof(FluentdAppender)} EnsureConnected - {ex.Message}");
+                }
 
-            try
-            {
-                _emitter?.Emit(loggingEvent.TimeStamp, Tag, record);
-            }
-            catch (Exception ex)
-            {
-                base.ErrorHandler.Error($"{nameof(FluentdAppender)} Emit - {ex.Message}");
-            }
+                try
+                {
+                    _emitter?.Emit(loggingEvent.TimeStamp, Tag, record);
+                }
+                catch (Exception ex)
+                {
+                    base.ErrorHandler.Error($"{nameof(FluentdAppender)} Emit - {ex.Message}");
+                }
+            });
         }
-
         protected void EnsureConnected()
         {
             if (_client == null)
