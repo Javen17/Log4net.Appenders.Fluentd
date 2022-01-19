@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Log4net.Appenders.Fluentd\Log4net.Appenders.Fluentd.csproj" />
+    <ProjectReference Include="..\Log4net.Appenders.Fluentd\Log4net.Appenders.FluentdAsync.csproj" />
   </ItemGroup>
 
   <ItemGroup>

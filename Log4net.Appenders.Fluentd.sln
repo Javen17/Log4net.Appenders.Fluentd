@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2018
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Log4net.Appenders.Fluentd", "src\Log4net.Appenders.Fluentd\Log4net.Appenders.Fluentd.csproj", "{BDF2DF19-485E-4D2D-80C1-471D2F865108}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Log4net.Appenders.FluentdAsync", "src\Log4net.Appenders.Fluentd\Log4net.Appenders.FluentdAsync.csproj", "{BDF2DF19-485E-4D2D-80C1-471D2F865108}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoApp", "src\DemoApp\DemoApp.csproj", "{AA90B41B-EF89-4A47-B9CE-753ED364AC59}"
 EndProject
